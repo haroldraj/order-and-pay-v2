@@ -20,7 +20,7 @@
         </dependency>
         <dependency>
             <groupId>com.hrajaona</groupId>
-            <artifactId>order-and-pay-library</artifactId>
+            <artifactId>order-and-pay-v2-lib</artifactId>
         </dependency>
         <dependency>
             <groupId>org.springframework.boot</groupId>

@@ -31,7 +31,7 @@
         <lombok.version>1.18.30</lombok.version>
         <maven.surefire.version>3.5.4</maven.surefire.version>
         <spring.boot.version>4.0.6</spring.boot.version>
-        <orderandpay.library.version>1.1.38</orderandpay.library.version>
+        <orderandpay.library.version>0.0.1</orderandpay.library.version>
         <flyway.core.version>11.13.2</flyway.core.version>
         <postgresql.version>42.7.7</postgresql.version>
         <flyway.postgresql.version>11.7.2</flyway.postgresql.version>
@@ -53,7 +53,7 @@
         <dependencies>
             <dependency>
                 <groupId>com.hrajaona</groupId>
-                <artifactId>order-and-pay-library</artifactId>
+                <artifactId>order-and-pay-v2-lib</artifactId>
                 <version>${orderandpay.library.version}</version>
             </dependency>
             <dependency>
