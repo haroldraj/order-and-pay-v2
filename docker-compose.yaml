@@ -1,0 +1,72 @@
+services:
+  user_db_v2:
+    container_name: user_db_v2
+    image: postgres:18.4
+    restart: always
+    environment:
+      POSTGRES_USER: user_user_db_v2
+      POSTGRES_PASSWORD: password_user_db_v2
+      POSTGRES_DB: user_db_v2
+    ports:
+      - "5441:5432"
+    volumes:
+      - user_db_v2:/var/lib/postgresql
+
+  order_db_v2:
+    container_name: order_db_v2
+    image: postgres:18.4
+    restart: always
+    environment:
+      POSTGRES_USER: user_order_db_v2
+      POSTGRES_PASSWORD: password_order_db_v2
+      POSTGRES_DB: order_db_v2
+    ports:
+      - "5442:5432"
+    volumes:
+      - order_db_v2:/var/lib/postgresql
+
+  payment_db_v2:
+    container_name: payment_db_v2
+    image: postgres:18.4
+    restart: always
+    environment:
+      POSTGRES_USER: user_payment_db_v2
+      POSTGRES_PASSWORD: password_payment_db_v2
+      POSTGRES_DB: payment_db_v2
+    ports:
+      - "5443:5432"
+    volumes:
+      - payment_db_v2:/var/lib/postgresql
+
+  kafka_v2:
+    container_name: kafka_v2
+    restart: always
+    image: confluentinc/cp-kafka:8.2.1
+    ports:
+      - "9192:9092"
+    environment:
+      CLUSTER_ID: kafka-order-and-pay-v2-id
+
+      KAFKA_NODE_ID: 1
+      KAFKA_PROCESS_ROLES: broker, controller
+      KAFKA_CONTROLLER_QUORUM_VOTERS: 1@kafka_v2:9093
+
+      KAFKA_LISTENERS: PLAINTEXT://0.0.0.0:9092,CONTROLLER://0.0.0.0:9093
+      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://localhost:9192
+      KAFKA_CONTORLLER_LISTENENRS_NAMES: CONTROLLER
+
+      KAFKA_OFFSETS_TOPIC_REPLCIATION_FACTOR: 1
+      KAFKA_TRANSACTION_STATE_LOG_REPLICATION_FACTOR: 1
+      KAFKA_MIN_INSYNC_REPLICAS: 1
+      KAFKA_TRANSACTION_STATE_LOG_MIN_ISR: 1
+
+      KAFKA_LOG_DIRS: /var/lib/kafka/data
+
+    volumes:
+      - kafka_v2:/var/lib/kafka/data
+
+volumes:
+  user_db_v2:
+  order_db_v2:
+  payment_db_v2:
+  kafka_v2:
