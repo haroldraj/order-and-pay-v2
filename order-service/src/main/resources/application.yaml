@@ -1,0 +1,43 @@
+spring:
+  application:
+    name: 'order-and-pay-v2-payment-service'
+
+  jpa:
+    hibernate:
+      ddl-auto: none
+
+  datasource:
+    url: jdbc:postgresql://localhost:5442/order_db_v2
+    username: user_order_db_v2
+    password: password_order_db_v2
+
+  kafka:
+    bootstrap-servers: localhost:9192
+
+    producer:
+      key-serializer: org.apache.kafka.common.serialization.StringSerializer
+      value-serializer: org.springframework.kafka.support.serializer.JsonSerializer
+
+    consumer:
+      auto-offset-reset: earliest
+      key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+      value-deserializer: org.springframework.kafka.support.serializer.JsonDeserializer
+      group-id: payment-group
+
+    properties:
+      spring:
+        json:
+          trusted:
+            packages: "com.hrajaona.*"
+
+
+springdoc:
+  swagger-ui:
+    path: /swagger-ui
+
+server:
+  port: 5453
+
+logging:
+  level:
+    org.springframework: INFO
