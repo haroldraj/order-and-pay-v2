@@ -1,0 +1,6 @@
+### GET request to example server
+GET http://localhost:5451/api/v1/addresses/default?userId=6f0b2af5-42e1-4b7f-b6b1-5a74b0cfb0e1
+
+###
+GET http://localhost:5451/api/v1/addresses?userId=74a8a6b3-208c-4c5a-900e-6e5135f477cd
+###

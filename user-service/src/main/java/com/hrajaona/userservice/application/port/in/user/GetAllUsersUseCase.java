@@ -1,4 +1,4 @@
-package com.hrajaona.userservice.application.port.in;
+package com.hrajaona.userservice.application.port.in.user;
 
 import com.hrajaona.userservice.domain.model.User;
 

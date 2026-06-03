@@ -1,6 +1,6 @@
 package com.hrajaona.userservice.application.service;
 
-import com.hrajaona.userservice.application.port.in.GetAllUsersUseCase;
+import com.hrajaona.userservice.application.port.in.user.GetAllUsersUseCase;
 import com.hrajaona.userservice.application.port.out.UserRepositoryPort;
 import com.hrajaona.userservice.domain.model.User;
 import lombok.RequiredArgsConstructor;
