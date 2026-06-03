@@ -1,0 +1,74 @@
+package com.hrajaona.paymentservice.application.service;
+
+import com.hrajaona.orderandpayv2lib.events.OrderCreatedEvent;
+import com.hrajaona.paymentservice.adapters.in.web.dto.PaymentRequest;
+import com.hrajaona.paymentservice.adapters.out.kafka.PaymentEventProducerAdapter;
+import com.hrajaona.paymentservice.adapters.out.persistence.mapper.PaymentMapper;
+import com.hrajaona.paymentservice.application.port.in.PaymentUseCase;
+import com.hrajaona.paymentservice.application.port.out.PaymentRepositoryPort;
+import com.hrajaona.paymentservice.domain.enums.PaymentStatus;
+import com.hrajaona.paymentservice.domain.exception.PaymentNotFoundException;
+import com.hrajaona.paymentservice.domain.model.Payment;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.stereotype.Service;
+
+import java.time.LocalDateTime;
+import java.util.List;
+import java.util.UUID;
+
+@Service
+@Slf4j
+@RequiredArgsConstructor
+public class PaymentService implements PaymentUseCase {
+    private final PaymentRepositoryPort paymentRepositoryPort;
+    private final PaymentMapper paymentMapper;
+    private final PaymentEventProducerAdapter paymentEventProducerAdapter;
+
+    @Override
+    public List<Payment> getAllPayments() {
+        return paymentRepositoryPort.findAll();
+    }
+
+    @Override
+    public Payment getPaymentById(UUID id) {
+        return paymentRepositoryPort.findById(id)
+                .orElseThrow(() -> new PaymentNotFoundException(id));
+    }
+
+    @Override
+    public Payment createPayment(PaymentRequest paymentRequest) {
+        Payment payment = new Payment();
+        LocalDateTime now = LocalDateTime.now();
+
+        payment.setId(UUID.randomUUID());
+        payment.setAmount(paymentRequest.amount());
+        payment.setMethod(paymentRequest.method());
+        payment.setUserId(paymentRequest.userId());
+        payment.setOrderId(paymentRequest.orderId());
+        payment.setReference(paymentRequest.reference());
+        payment.setValueDate(now);
+        payment.setStatus(PaymentStatus.valueOf(paymentRequest.status()));
+        payment.setCreatedAt(now);
+        payment.setUpdatedAt(now);
+
+        return paymentRepositoryPort.save(payment);
+    }
+
+    @Override
+    public void deletePayment(UUID id) {
+
+    }
+
+    @Override
+    public Payment updatePayment(UUID id, PaymentRequest paymentRequest) {
+        return null;
+    }
+
+    @Override
+    public void processOrderPayment(OrderCreatedEvent orderCreatedEvent, String correlationId) {
+        Payment payment  = new Payment();
+        log.info("Processing Payment of OrderCreatedEvent with correlationId={}", correlationId);
+//        paymentEventProducerAdapter.publishPaymentCompleted(payment, correlationId);
+    }
+}

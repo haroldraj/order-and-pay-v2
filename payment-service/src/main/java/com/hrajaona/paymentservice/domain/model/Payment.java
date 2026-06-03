@@ -1,0 +1,35 @@
+package com.hrajaona.paymentservice.domain.model;
+
+import com.hrajaona.paymentservice.domain.enums.PaymentStatus;
+import lombok.*;
+
+import java.math.BigDecimal;
+import java.time.LocalDateTime;
+import java.util.UUID;
+
+@Getter
+@Setter
+@AllArgsConstructor
+@NoArgsConstructor
+@Builder
+public class Payment {
+    private UUID id;
+    private UUID orderId;
+    private UUID userId;
+    private BigDecimal amount;
+    private String method;
+    private PaymentStatus status;
+    private String reference;
+    private LocalDateTime valueDate;
+    private LocalDateTime createdAt;
+    private LocalDateTime updatedAt;
+
+    public void markAsCompleted() {
+        this.status = PaymentStatus.COMPLETED;
+        this.method = "CARD";
+    }
+
+    public void markAsFailed() {
+        this.status = PaymentStatus.FAILED;
+    }
+}

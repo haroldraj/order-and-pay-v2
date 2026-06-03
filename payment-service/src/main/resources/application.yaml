@@ -11,7 +11,7 @@ spring:
     username: user_payment_db_v2
     password: password_payment_db_v2
 
-  kafka:
+  Kafka:
     bootstrap-servers: localhost:9192
 
     producer:
