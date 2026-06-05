@@ -11,7 +11,7 @@ spring:
     username: user_order_db_v2
     password: password_order_db_v2
 
-  kafka:
+  Kafka:
     bootstrap-servers: localhost:9192
 
     producer:
@@ -36,7 +36,7 @@ springdoc:
     path: /swagger-ui
 
 server:
-  port: 5453
+  port: 5452
 
 logging:
   level:

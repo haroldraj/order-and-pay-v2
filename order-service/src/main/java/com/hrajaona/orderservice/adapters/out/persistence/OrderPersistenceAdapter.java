@@ -1,0 +1,73 @@
+package com.hrajaona.orderservice.adapters.out.persistence;
+
+import com.hrajaona.orderservice.adapters.out.persistence.entity.order.OrderJpaEntity;
+import com.hrajaona.orderservice.adapters.out.persistence.mapper.order.OrderItemPersistenceMapper;
+import com.hrajaona.orderservice.adapters.out.persistence.mapper.order.OrderPersistenceMapper;
+import com.hrajaona.orderservice.adapters.out.persistence.repository.order.OrderJpaRepository;
+import com.hrajaona.orderservice.application.port.out.OrderRepositoryPort;
+import com.hrajaona.orderservice.domain.exception.OrderNotFoundException;
+import com.hrajaona.orderservice.domain.model.Order;
+import com.hrajaona.orderservice.domain.model.OrderItem;
+import lombok.RequiredArgsConstructor;
+import org.springframework.stereotype.Component;
+
+import java.math.BigDecimal;
+import java.util.List;
+import java.util.UUID;
+
+@Component
+@RequiredArgsConstructor
+public class OrderPersistenceAdapter implements OrderRepositoryPort {
+    private final OrderJpaRepository orderJpaRepository;
+    private final OrderPersistenceMapper orderPersistenceMapper;
+    private final OrderItemPersistenceMapper orderItemPersistenceMapper;
+
+    @Override
+    public List<Order> findAll() {
+        return orderJpaRepository.findAll()
+                .stream()
+                .map(orderPersistenceMapper::toDomain)
+                .toList();
+    }
+
+    @Override
+    public Order findByIdAndUserId(UUID id, UUID userId) {
+        return orderJpaRepository.findByIdAndUserId(id, userId)
+                .map(orderPersistenceMapper::toDomain)
+                .orElseThrow(() -> new OrderNotFoundException(id));
+    }
+
+    @Override
+    public Order findByIdAndRestaurantId(UUID id, UUID restaurantId) {
+        return orderJpaRepository.findByIdAndRestaurantId(id, restaurantId)
+                .map(orderPersistenceMapper::toDomain)
+                .orElseThrow(() -> new OrderNotFoundException(id));
+    }
+
+    @Override
+    public Order update(Order order, List<OrderItem> orderItems) {
+        try{
+            order.setId(UUID.randomUUID());
+            OrderJpaEntity newOrder = orderPersistenceMapper.toEntity(order);
+            newOrder.addOrderItems(orderItemPersistenceMapper.toEntities(orderItems));
+
+            OrderJpaEntity savedOrder = orderJpaRepository.save(newOrder);
+            return  orderPersistenceMapper.toDomain(savedOrder);
+        }
+        catch (Exception ex){
+            throw new RuntimeException("Cannot update order | "+ex);
+        }
+    }
+
+    @Override
+    public Order findByIdAndUserIdAndAmount(UUID id, UUID userId, BigDecimal amount) {
+        return orderJpaRepository.findByIdAndUserIdAndAmount(id, userId, amount)
+                .map(orderPersistenceMapper::toDomain)
+                .orElseThrow(() -> new OrderNotFoundException(id));
+    }
+
+    @Override
+    public void update(Order order) {
+        orderJpaRepository.save(orderPersistenceMapper.toEntity(order));
+    }
+}

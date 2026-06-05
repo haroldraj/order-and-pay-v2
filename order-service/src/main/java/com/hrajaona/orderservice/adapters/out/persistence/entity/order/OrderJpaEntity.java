@@ -1,0 +1,76 @@
+package com.hrajaona.orderservice.adapters.out.persistence.entity.order;
+
+import com.hrajaona.orderandpayv2lib.model.AddressSnapshot;
+import com.hrajaona.orderandpayv2lib.model.RestaurantSnapshot;
+import jakarta.persistence.*;
+import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.Setter;
+import org.hibernate.annotations.JdbcTypeCode;
+import org.hibernate.annotations.UpdateTimestamp;
+import org.hibernate.type.SqlTypes;
+
+import java.math.BigDecimal;
+import java.time.LocalDateTime;
+import java.util.List;
+import java.util.UUID;
+
+@Entity
+@Getter
+@Setter
+@EqualsAndHashCode
+@Table(name = "orders")
+public class OrderJpaEntity {
+    @Id
+    private UUID id;
+
+    @Column
+    private UUID userId;
+
+    @Column
+    private UUID addressId;
+
+    @Column
+    private UUID restaurantId;
+
+    @Column
+    private String status;
+
+    @Column
+    private BigDecimal amount;
+
+    @Column
+    private String paymentStatus;
+
+    @Column
+    private String deliveryStatus;
+
+    @JdbcTypeCode(SqlTypes.JSON)
+    @Column(columnDefinition = "jsonb")
+    private AddressSnapshot addressSnapshot;
+
+    @JdbcTypeCode(SqlTypes.JSON)
+    @Column(columnDefinition = "jsonb")
+    private RestaurantSnapshot restaurantSnapshot;
+
+    @Column
+    private LocalDateTime valueDate;
+
+    @Column
+    @UpdateTimestamp
+    private LocalDateTime updatedAt;
+
+    @OneToMany(mappedBy = "order",fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    private List<OrderItemJpaEntity> orderItems;
+//
+//    @OneToMany(mappedBy = "order",fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+//    private List<OrderStatusHistoryJpaEntity> orderStatusHistories;
+
+    public void addOrderItems(List<OrderItemJpaEntity> orderItems) {
+        if (orderItems.isEmpty()) return;
+        this.orderItems.addAll(orderItems);
+        this.orderItems.forEach(orderItem -> orderItem.setOrder(this));
+
+    }
+
+}
